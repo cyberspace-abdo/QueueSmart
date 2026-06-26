@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card center-card">
+    <h1>QR code for {{ business.name }}</h1>
+    <img src="{{ image_path }}" alt="QR code">
+    <p>Customers can scan this code to open the queue page.</p>
+    <a class="button" href="{{ url_for('business_page', business_id=business.id) }}">Back to business page</a>
+</section>
+{% endblock %}

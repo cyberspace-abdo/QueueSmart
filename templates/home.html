@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero-card">
+    <h1>Welcome to Noubti</h1>
+    <p>Smart queue management for small businesses and public services.</p>
+    <a class="button primary" href="#businesses">Explore businesses</a>
+</section>
+
+<section id="businesses" class="card-grid">
+    {% for business in businesses %}
+    <article class="card">
+        <h2>{{ business.name }}</h2>
+        <p>{{ business.business_type }} · {{ business.address }}</p>
+        <a class="button" href="{{ url_for('business_page', business_id=business.id) }}">Open queue</a>
+    </article>
+    {% else %}
+    <p>No businesses available yet.</p>
+    {% endfor %}
+</section>
+{% endblock %}

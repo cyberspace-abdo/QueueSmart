@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+    <div class="card-heading">
+        <div>
+            <h1>{{ business.name }} Dashboard</h1>
+            <p>Manage the queue and update statuses.</p>
+        </div>
+        <a class="button" href="{{ url_for('services_list', business_id=business.id) }}">Manage services</a>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-box">
+            <small>Tickets today</small>
+            <strong>{{ stats.ticket_count }}</strong>
+        </div>
+        <div class="stat-box">
+            <small>Completed</small>
+            <strong>{{ stats.completed_count }}</strong>
+        </div>
+        <div class="stat-box">
+            <small>Cancelled</small>
+            <strong>{{ stats.cancelled_count }}</strong>
+        </div>
+        <div class="stat-box">
+            <small>Avg wait</small>
+            <strong>{{ stats.average_waiting }} min</strong>
+        </div>
+    </div>
+
+    <div class="card-heading">
+        <h2>Current customer</h2>
+        <form method="post" action="{{ url_for('call_next_customer', business_id=business.id) }}">
+            <button class="button primary" type="submit">Call next customer</button>
+        </form>
+    </div>
+
+    {% if current_customer %}
+    <div class="queue-card">
+        <strong>{{ current_customer.ticket_number }}</strong>
+        <p>{{ current_customer.customer_name }}</p>
+        <span class="badge {{ current_customer.status }}">{{ current_customer.status }}</span>
+    </div>
+    {% else %}
+    <p>No customer being served.</p>
+    {% endif %}
+
+    <h2>Waiting and recent customers</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Ticket</th>
+                <th>Customer</th>
+                <th>Position</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ticket in tickets %}
+            <tr>
+                <td>{{ ticket.ticket_number }}</td>
+                <td>{{ ticket.customer_name }}</td>
+                <td>{{ ticket.position if ticket.position else '-' }}</td>
+                <td><span class="badge {{ ticket.status }}">{{ ticket.status }}</span></td>
+                <td>
+                    <form method="post" action="{{ url_for('update_ticket_status', ticket_id=ticket.id) }}" class="inline-form">
+                        <select name="status">
+                            <option value="waiting" {% if ticket.status == "waiting" %}selected{% endif %}>waiting</option>
+                            <option value="called" {% if ticket.status == "called" %}selected{% endif %}>called</option>
+                            <option value="in_service" {% if ticket.status == "in_service" %}selected{% endif %}>in_service</option>
+                            <option value="completed" {% if ticket.status == "completed" %}selected{% endif %}>completed</option>
+                            <option value="cancelled" {% if ticket.status == "cancelled" %}selected{% endif %}>cancelled</option>
+                            <option value="absent" {% if ticket.status == "absent" %}selected{% endif %}>absent</option>
+                        </select>
+                        <button class="button" type="submit">Update</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">No tickets yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}
