@@ -1,12 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="card ticket-card">
-    <h1>Ticket created successfully</h1>
-    <p>Thank you, {{ ticket.customer_name }}.</p>
-    <div class="ticket-number">{{ ticket.ticket_number }}</div>
-    <p><strong>Service:</strong> {{ service.name }}</p>
-    <p><strong>Status:</strong> {{ ticket.status }}</p>
-    <p><strong>Estimated waiting:</strong> {{ ticket.estimated_waiting_minutes }} min</p>
-    <a class="button primary" href="{{ url_for('ticket_status', ticket_id=ticket.id) }}">View ticket status</a>
+<section class="card">
+    <h1>Take a ticket</h1>
+    <p>{{ business.name }}</p>
+    {% if error %}<p class="error">{{ error }}</p>{% endif %}
+    {% if services %}
+    <form method="post" action="{{ url_for('take_ticket', business_id=business.id) }}" class="form-stack">
+        <label for="service_id">Service</label>
+        <select id="service_id" name="service_id" required>
+            <option value="">Choose a service</option>
+            {% for service in services %}
+            <option value="{{ service.id }}">{{ service.name }} - {{ service.duration }} min - {{ service.price }} DH</option>
+            {% endfor %}
+        </select>
+
+        <label for="customer_name">Your name</label>
+        <input id="customer_name" type="text" name="customer_name" required>
+
+        <label for="phone">Your phone <span class="muted">(optional)</span></label>
+        <input id="phone" type="tel" name="phone" placeholder="0612345678">
+
+        <button class="button primary" type="submit">Take ticket</button>
+    </form>
+    {% else %}
+    <p class="empty-state">No services are available for this business yet.</p>
+    {% endif %}
 </section>
 {% endblock %}

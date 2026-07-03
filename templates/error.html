@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="card center-card">
-    <h1>Something went wrong</h1>
+    <h1>{{ status_code or 'Error' }}</h1>
     <p>{{ message }}</p>
     <a class="button" href="{{ url_for('home') }}">Go home</a>
 </section>

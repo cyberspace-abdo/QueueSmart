@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card ticket-card">
+    <h1>Ticket created successfully</h1>
+    <p>Thank you, {{ ticket.customer_name }}.</p>
+    <div class="ticket-number">{{ ticket.ticket_number }}</div>
+    <p><strong>Service:</strong> {{ service.name }}</p>
+    <p><strong>Status:</strong> {{ ticket.status }}</p>
+    <p><strong>Position:</strong> {{ ticket.position }}</p>
+    <p><strong>Estimated waiting:</strong> {{ ticket.estimated_waiting_minutes }} min</p>
+    <a class="button primary" href="{{ url_for('ticket_status', ticket_id=ticket.id) }}">View ticket status</a>
+</section>
+{% endblock %}

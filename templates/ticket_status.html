@@ -3,16 +3,18 @@
 <section class="card ticket-card">
     <h1>Ticket status</h1>
     <p>{{ business.name }}</p>
-    <div class="ticket-number">{{ ticket.ticket_number }}</div>
+    <div id="ticket-number" class="ticket-number">{{ ticket.ticket_number }}</div>
     <span id="status-badge" class="badge {{ ticket.status }}">{{ ticket.status }}</span>
     <p id="status-message">{{ message }}</p>
 
     <ul class="info-list">
         <li><strong>Customer:</strong> {{ ticket.customer_name }}</li>
-        <li><strong>Phone:</strong> {{ ticket.phone }}</li>
-        <li><strong>Service:</strong> {{ service.name }}</li>
-        <li><strong>Position:</strong> {{ ticket.position if ticket.position else 'Pending' }}</li>
-        <li><strong>Estimated waiting:</strong> {{ ticket.estimated_waiting_minutes }} min</li>
+        <li><strong>Phone:</strong> {{ ticket.phone or 'Not provided' }}</li>
+        <li><strong>Service:</strong> {{ service.name if service else ticket.service_name or 'Deleted service' }}</li>
+        <li><strong>Current ticket:</strong> <span id="current-ticket">Loading</span></li>
+        <li><strong>Position:</strong> <span id="position">{{ ticket.position if ticket.position else '-' }}</span></li>
+        <li><strong>People before you:</strong> <span id="people-before">{{ (ticket.position - 1) if ticket.position else 0 }}</span></li>
+        <li><strong>Estimated waiting:</strong> <span id="estimated-waiting">{{ ticket.estimated_waiting_minutes }}</span> min</li>
     </ul>
 
     {% if ticket.status == "waiting" %}
@@ -22,8 +24,11 @@
     {% endif %}
 </section>
 
-<script src="{{ url_for('static', filename='js/ticket.js') }}"></script>
 <script>
-    document.body.dataset.ticketId = "{{ ticket.id }}";
+    window.NoubtiTicket = {
+        ticketId: {{ ticket.id }},
+        pollIntervalMs: {{ poll_interval * 1000 }}
+    };
 </script>
+<script src="{{ url_for('static', filename='js/ticket.js') }}"></script>
 {% endblock %}

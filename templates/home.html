@@ -10,11 +10,11 @@
     {% for business in businesses %}
     <article class="card">
         <h2>{{ business.name }}</h2>
-        <p>{{ business.business_type }} · {{ business.address }}</p>
+        <p>{{ business.business_type }} - {{ business.address }}</p>
         <a class="button" href="{{ url_for('business_page', business_id=business.id) }}">Open queue</a>
     </article>
     {% else %}
-    <p>No businesses available yet.</p>
+    <p class="empty-state">No businesses available yet.</p>
     {% endfor %}
 </section>
 {% endblock %}

@@ -4,7 +4,7 @@
     <div class="card-heading">
         <div>
             <h1>{{ business.name }}</h1>
-            <p>{{ business.business_type }} · {{ business.address }}</p>
+            <p>{{ business.business_type }} - {{ business.address }}</p>
         </div>
         <span class="badge {% if is_open %}open{% else %}closed{% endif %}">
             {% if is_open %}Open{% else %}Closed{% endif %}
@@ -21,29 +21,36 @@
             <strong>{{ summary.waiting_count }}</strong>
         </div>
         <div class="stat-box">
-            <small>Estimated wait</small>
+            <small>Estimated active work</small>
             <strong>{{ summary.estimated_waiting }} min</strong>
         </div>
     </div>
 
     <h2>Take a digital ticket</h2>
     {% if error %}<p class="error">{{ error }}</p>{% endif %}
+    {% if services %}
     <form method="post" action="{{ url_for('take_ticket', business_id=business.id) }}" class="form-stack">
-        <label>Service</label>
-        <select name="service_id" required>
+        <label for="service_id">Service</label>
+        <select id="service_id" name="service_id" required>
+            <option value="">Choose a service</option>
             {% for service in services %}
-            <option value="{{ service.id }}">{{ service.name }} · {{ service.duration }} min · {{ service.price }} DH</option>
+            <option value="{{ service.id }}" {% if form_data and form_data.get('service_id')|int == service.id %}selected{% endif %}>
+                {{ service.name }} - {{ service.duration }} min - {{ service.price }} DH
+            </option>
             {% endfor %}
         </select>
 
-        <label>Your name</label>
-        <input type="text" name="customer_name" required>
+        <label for="customer_name">Your name</label>
+        <input id="customer_name" type="text" name="customer_name" value="{{ form_data.get('customer_name', '') if form_data else '' }}" required>
 
-        <label>Your phone</label>
-        <input type="tel" name="phone" required>
+        <label for="phone">Your phone <span class="muted">(optional)</span></label>
+        <input id="phone" type="tel" name="phone" value="{{ form_data.get('phone', '') if form_data else '' }}" placeholder="0612345678">
 
         <button class="button primary" type="submit">Take ticket</button>
     </form>
+    {% else %}
+    <p class="empty-state">No services are available for this business yet.</p>
+    {% endif %}
 
     <div class="links-row">
         <a class="button" href="{{ url_for('qr_code_page', business_id=business.id) }}">Show QR Code</a>

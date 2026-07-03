@@ -5,13 +5,13 @@
     {% if error %}<p class="error">{{ error }}</p>{% endif %}
     <form method="post" class="form-stack">
         <label>Service name</label>
-        <input type="text" name="name" value="{{ service.name }}" required>
+        <input type="text" name="name" value="{{ form_data.get('name', service.name) if form_data else service.name }}" required>
 
         <label>Duration (minutes)</label>
-        <input type="number" name="duration" min="1" value="{{ service.duration }}" required>
+        <input type="number" name="duration" min="1" value="{{ form_data.get('duration', service.duration) if form_data else service.duration }}" required>
 
         <label>Price (DH)</label>
-        <input type="number" name="price" min="0" value="{{ service.price }}" required>
+        <input type="number" name="price" min="0" value="{{ form_data.get('price', service.price) if form_data else service.price }}" required>
 
         <button class="button primary" type="submit">Update service</button>
     </form>

@@ -1,4 +1,10 @@
+.env
 venv/
+.venv/
 __pycache__/
 *.pyc
 instance/*.db
+qr_codes/*.png
+!qr_codes/.gitkeep
+.DS_Store
+Thumbs.db
